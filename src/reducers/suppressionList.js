@@ -40,6 +40,7 @@ export const suppressionFormReset = (state = false, action) => {
       return action.shouldReset
     default:
       return state
+  }
 }
 
 export const suppressionFormPhoneTypes = (state = [], action) => {
