@@ -1,9 +1,11 @@
+import _ from 'lodash'
 import {
   SUPPRESSIONFORM_SUBMITTING,
   SUPPRESSIONFORM_SUBMITTED,
   SUPPRESSIONFORM_SUBMIT_FAIL,
   SUPPRESSIONFORM_PHONE_TYPE,
   SUPPRESSIONFORM_SHOULD_RESET,
+  SUPPRESSIONFORM_PHONE_NUMBER,
 } from '../constants/actionTypes'
 
 export const suppressionFormIsSubmitting = (state = false, action) => {
@@ -42,11 +44,24 @@ export const suppressionFormReset = (state = false, action) => {
   }
 }
 
-export const suppressionFormPhoneTypes = (state = [], action) => {
+export const suppressionFormPhoneTypes = (state = {sms: true, voicemail: true}, action) => {
   switch (action.type) {
     case SUPPRESSIONFORM_PHONE_TYPE:
-      state.push(action.value)
+      let newState = {}
+      newState[action.name] = !state[action.name]
+
+      state = _.merge({}, state, newState)
+
       return state
+    default:
+      return state
+  }
+}
+
+export const suppressionFormPhoneNumber = (state = '(   )    -    ', action) => {
+  switch (action.type) {
+    case SUPPRESSIONFORM_PHONE_NUMBER:
+      return action.number
     default:
       return state
   }

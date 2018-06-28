@@ -7,7 +7,7 @@ export const formSubmit = (url, data, config) => {
 
     axios.post(url, data, config)
       .then((response) => {
-          if (response.status !== 200) {
+          if (response.status !== 201 && response.status !== 200) {
               throw Error(response.statusText);
           }
 
@@ -15,7 +15,14 @@ export const formSubmit = (url, data, config) => {
           return response;
       })
       .then((response) => dispatch(formSubmitted(response.data)))
-      .then((response) => dispatch(formShouldReset(true)))
+      .then((response) => {
+        if (response.status === 201) {
+          // new
+        } else if (response.status === 200) {
+          // edit
+        }
+        dispatch(formShouldReset(true))
+      })
       .catch((error) => dispatch(formSubmitError(error)));
   }
 }
@@ -48,9 +55,16 @@ export const formShouldReset = shouldReset => {
   }
 }
 
-export const checkPhoneType = value => {
+export const checkPhoneType = name => {
   return {
     type: types.SUPPRESSIONFORM_PHONE_TYPE,
-    value: value
+    name: name
+  }
+}
+
+export const inputPhoneNumber = number => {
+  return {
+    type: types.SUPPRESSIONFORM_PHONE_NUMBER,
+    number: number
   }
 }
