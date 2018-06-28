@@ -1,12 +1,15 @@
 /* eslint-disable react/prefer-stateless-function */
 
 import React from 'react';
+import { connect } from 'react-redux'
 import MaskedInput from 'react-text-mask';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
+
+import { inputPhoneNumber } from '../actions/suppressionList'
 
 const styles = theme => ({
   container: {
@@ -36,27 +39,34 @@ PhoneMask.propTypes = {
   inputRef: PropTypes.func.isRequired,
 };
 
+const mapStateToProps = state => {
+  return {
+    phone: { textmask: state.suppressionFormPhoneNumber },
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    inputPhoneNumber: (number) => dispatch(inputPhoneNumber(number))
+  }
+}
+
 class PhoneInput extends React.Component {
-  state = {
-    textmask: '(1  )    -    ',
-  };
 
   handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value,
-    });
+    this.props.inputPhoneNumber(event.target.value)
   };
+
 
   render() {
     const { classes } = this.props;
-    const { textmask } = this.state;
 
     return (
       <div className={classes.container}>
         <FormControl className={classes.formControl}>
           <InputLabel htmlFor="phone-mask-input">{this.props.title}</InputLabel>
           <Input
-            value={textmask}
+            value={this.props.phone.textmask}
             onChange={this.handleChange('textmask')}
             id="phone-mask-input"
             inputComponent={PhoneMask}
@@ -71,4 +81,4 @@ PhoneInput.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(PhoneInput);
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(PhoneInput))

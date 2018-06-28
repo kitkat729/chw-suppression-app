@@ -1,9 +1,12 @@
 import React from 'react';
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+
+import { checkPhoneType } from '../actions/suppressionList'
 
 const styles = {
   root: {
@@ -15,14 +18,22 @@ const styles = {
   },
 };
 
+const mapStateToProps = state => {
+  return {
+    types: state.suppressionFormPhoneTypes
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    checkPhoneType: (name) => dispatch(checkPhoneType(name))
+  }
+}
+
 class CheckboxLabels extends React.Component {
-  state = {
-    sms: true,
-    voicemail: true,
-  };
 
   handleChange = name => event => {
-    this.setState({ [name]: event.target.checked });
+    this.props.checkPhoneType(name)
   };
 
   render() {
@@ -33,7 +44,7 @@ class CheckboxLabels extends React.Component {
         <FormControlLabel
           control={
             <Checkbox
-              checked={this.state.sms}
+              checked={this.props.types.sms}
               onChange={this.handleChange('sms')}
               value="sms"
               color="primary"
@@ -44,7 +55,7 @@ class CheckboxLabels extends React.Component {
         <FormControlLabel
           control={
             <Checkbox
-              checked={this.state.voicemail}
+              checked={this.props.types.voicemail}
               onChange={this.handleChange('voicemail')}
               value="voicemail"
               color="primary"
@@ -61,4 +72,4 @@ CheckboxLabels.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(CheckboxLabels);
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(CheckboxLabels));
