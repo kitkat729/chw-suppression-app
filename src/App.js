@@ -4,7 +4,7 @@ import configureStore from './configureStore'
 
 import './App.css';
 
-import SuppressionListContainer from './containers/SuppressionListContainer'
+import SuppressionForm from './containers/SuppressionForm'
 
 const App = (props) => {
 
@@ -13,7 +13,9 @@ const App = (props) => {
     return (
       <div className="App">
         <Provider store={store}>
-          <SuppressionListContainer />
+          <div className='suppression-form'>
+            <SuppressionForm />
+          </div>
         </Provider>
       </div>
     )
